@@ -1,0 +1,13 @@
+services:
+  linepulse:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - linepulse-data:/app/data
+    environment:
+      DATABASE_URL: sqlite:///data/linepulse.db
+    restart: unless-stopped
+
+volumes:
+  linepulse-data:

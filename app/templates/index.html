@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinePulse — Industrial Quality Intelligence</title>
+  <meta name="description" content="Explainable industrial quality, reliability and production intelligence.">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">LP</span>
+      <div>
+        <strong>LinePulse</strong>
+        <small>Industrial Quality Intelligence</small>
+      </div>
+    </div>
+    <div class="system-state">
+      <span id="liveDot" class="state-dot"></span>
+      <span id="liveLabel">LIVE SIMULATION</span>
+      <button id="toggleButton" class="button secondary">Pause</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">PROOF-OF-WORK · INDUSTRIAL SOFTWARE</p>
+        <h1>See process drift<br><span>before scrap explodes.</span></h1>
+        <p class="hero-copy">
+          A working factory simulation that turns production events into OEE, reliability,
+          Pareto analysis and explainable alerts — with visible evidence behind every warning.
+        </p>
+      </div>
+      <div class="dependency-card">
+        <span>DEPENDENCY READINESS</span>
+        <strong id="dependencyStatus">Healthy</strong>
+        <small id="dependencyText">Production database is responding.</small>
+      </div>
+    </section>
+
+    <section class="control-panel">
+      <div>
+        <p class="panel-label">INJECT A REALISTIC FAILURE SCENARIO</p>
+        <div class="scenario-buttons">
+          <button data-scenario="baseline" class="scenario active">Baseline</button>
+          <button data-scenario="pressure_drift" class="scenario">Pressure drift</button>
+          <button data-scenario="micro_stops" class="scenario">Micro-stops</button>
+          <button data-scenario="defect_cluster" class="scenario">Defect cluster</button>
+          <button data-scenario="dependency_failure" class="scenario">Dependency failure</button>
+        </div>
+      </div>
+      <div class="control-actions">
+        <button id="resetButton" class="button secondary">Reset shift</button>
+        <a class="button primary" href="/api/reports/shift.xlsx">Download shift report</a>
+      </div>
+    </section>
+
+    <section id="kpiGrid" class="kpi-grid"></section>
+
+    <section class="dashboard-grid">
+      <article class="panel alerts-panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">EXPLAINABLE DETECTION</p>
+            <h2>Active alerts</h2>
+          </div>
+          <span id="alertCount" class="badge">0</span>
+        </div>
+        <div id="alerts"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">LOSS ANALYSIS</p>
+            <h2>Stop Pareto</h2>
+          </div>
+        </div>
+        <div id="stopPareto" class="bar-list"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">QUALITY ANALYSIS</p>
+            <h2>Defect Pareto</h2>
+          </div>
+        </div>
+        <div id="defectPareto" class="bar-list"></div>
+      </article>
+    </section>
+
+    <section class="panel events-panel">
+      <div class="panel-header">
+        <div>
+          <p class="panel-label">LIVE EVENT STREAM</p>
+          <h2>Latest production events</h2>
+        </div>
+        <a href="/docs" target="_blank">Open API docs ↗</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Machine</th><th>Product</th><th>Good</th><th>Rejects</th>
+              <th>Downtime</th><th>Pressure</th><th>Cause / defect</th>
+            </tr>
+          </thead>
+          <tbody id="eventsTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>LinePulse v0.1</span>
+    <span>FastAPI · SQLAlchemy · Prometheus · Pytest · Playwright · GitHub Actions</span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

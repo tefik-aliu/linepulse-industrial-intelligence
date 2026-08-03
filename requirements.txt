@@ -1,0 +1,5 @@
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+SQLAlchemy==2.0.41
+prometheus-client==0.22.1
+openpyxl==3.1.5
