@@ -1,0 +1,84 @@
+name: LinePulse CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run Ruff
+        run: ruff check app tests
+
+      - name: Run Python tests
+        run: python -m pytest -q
+
+  browser-qa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install service dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install browser dependencies
+        working-directory: qa
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Start LinePulse
+        run: |
+          uvicorn app.main:app --host 127.0.0.1 --port 8000 > /tmp/linepulse.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:8000/ready && exit 0
+            sleep 1
+          done
+          cat /tmp/linepulse.log
+          exit 1
+
+      - name: Validate TypeScript
+        working-directory: qa
+        run: npm run typecheck
+
+      - name: Run Playwright
+        working-directory: qa
+        run: npm test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linepulse-playwright-report
+          path: qa/playwright-report
+          if-no-files-found: ignore
