@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -32,14 +33,54 @@ def make_shift_workbook(events: list[ProductionEvent], dependency_degraded: bool
 
     kpis = overview["kpis"]
     rows = [
-        ("OEE", f"{kpis['oee']}%", "Combined availability, performance and quality", "Review" if kpis["oee"] < 70 else "Healthy"),
-        ("Availability", f"{kpis['availability']}%", "Time producing versus planned time", "Review" if kpis["availability"] < 85 else "Healthy"),
-        ("Performance", f"{kpis['performance']}%", "Actual throughput versus ideal cycle", "Review" if kpis["performance"] < 90 else "Healthy"),
-        ("Quality", f"{kpis['quality']}%", "Good output versus total output", "Review" if kpis["quality"] < 97 else "Healthy"),
-        ("Scrap rate", f"{kpis['scrap_rate']}%", "Rejected units versus total output", "Review" if kpis["scrap_rate"] > 3 else "Healthy"),
-        ("Downtime", f"{kpis['downtime_minutes']} min", "Accumulated recorded downtime", "Observe"),
-        ("MTBF", f"{kpis['mtbf_minutes']} min", "Mean run time between material failures", "Observe"),
-        ("MTTR", f"{kpis['mttr_minutes']} min", "Mean time to repair recorded failures", "Observe"),
+        (
+            "OEE",
+            f"{kpis['oee']}%",
+            "Combined availability, performance and quality",
+            "Review" if kpis["oee"] < 70 else "Healthy",
+        ),
+        (
+            "Availability",
+            f"{kpis['availability']}%",
+            "Time producing versus planned time",
+            "Review" if kpis["availability"] < 85 else "Healthy",
+        ),
+        (
+            "Performance",
+            f"{kpis['performance']}%",
+            "Actual throughput versus ideal cycle",
+            "Review" if kpis["performance"] < 90 else "Healthy",
+        ),
+        (
+            "Quality",
+            f"{kpis['quality']}%",
+            "Good output versus total output",
+            "Review" if kpis["quality"] < 97 else "Healthy",
+        ),
+        (
+            "Scrap rate",
+            f"{kpis['scrap_rate']}%",
+            "Rejected units versus total output",
+            "Review" if kpis["scrap_rate"] > 3 else "Healthy",
+        ),
+        (
+            "Downtime",
+            f"{kpis['downtime_minutes']} min",
+            "Accumulated recorded downtime",
+            "Observe",
+        ),
+        (
+            "MTBF",
+            f"{kpis['mtbf_minutes']} min",
+            "Mean run time between material failures",
+            "Observe",
+        ),
+        (
+            "MTTR",
+            f"{kpis['mttr_minutes']} min",
+            "Mean time to repair recorded failures",
+            "Observe",
+        ),
     ]
     for row in rows:
         summary.append(row)

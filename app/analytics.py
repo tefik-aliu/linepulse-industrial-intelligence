@@ -36,7 +36,13 @@ def calculate_kpis(events: list[ProductionEvent]) -> dict[str, float | int]:
     failures = [
         event
         for event in events
-        if event.stop_reason not in {"None", "Sensor reset", "Alignment check", "Material reposition"}
+        if event.stop_reason
+        not in {
+            "None",
+            "Sensor reset",
+            "Alignment check",
+            "Material reposition",
+        }
         and event.downtime_seconds >= 20
     ]
     mtbf_minutes = safe_div(run / 60, len(failures)) if failures else run / 60
@@ -81,8 +87,13 @@ def detect_alerts(events: list[ProductionEvent]) -> list[Alert]:
                 code="PRESSURE_DRIFT",
                 severity="critical",
                 title="Cutting pressure drift is driving defects",
-                evidence=f"24-event pressure average is {avg_pressure:.2f} bar and scrap is {reject_rate:.2f}%.",
-                recommendation="Inspect pressure regulation and edge quality before the next batch.",
+                evidence=(
+                    f"24-event pressure average is {avg_pressure:.2f} bar "
+                    f"and scrap is {reject_rate:.2f}%."
+                ),
+                recommendation=(
+                    "Inspect pressure regulation and edge quality before the next batch."
+                ),
             )
         )
 
@@ -98,8 +109,14 @@ def detect_alerts(events: list[ProductionEvent]) -> list[Alert]:
                 code="MICRO_STOP_CLUSTER",
                 severity="warning",
                 title="Repeated micro-stops are eroding availability",
-                evidence=f"{len(micro_stops)} short stops occurred in the latest 24 production events.",
-                recommendation="Group the stops by reason and inspect the dominant sensor or alignment condition.",
+                evidence=(
+                    f"{len(micro_stops)} short stops occurred "
+                    "in the latest 24 production events."
+                ),
+                recommendation=(
+                    "Group the stops by reason and inspect the dominant "
+                    "sensor or alignment condition."
+                ),
             )
         )
 
@@ -119,8 +136,14 @@ def detect_alerts(events: list[ProductionEvent]) -> list[Alert]:
                     code="DEFECT_CONCENTRATION",
                     severity="critical" if share >= 0.78 else "warning",
                     title=f"{defect_name} dominates current rejects",
-                    evidence=f"{defect_count} of {total_defects} weighted reject observations ({share * 100:.0f}%).",
-                    recommendation="Contain the affected machine/product combination and verify process parameters.",
+                    evidence=(
+                        f"{defect_count} of {total_defects} weighted reject "
+                        f"observations ({share * 100:.0f}%)."
+                    ),
+                    recommendation=(
+                        "Contain the affected machine/product combination "
+                        "and verify process parameters."
+                    ),
                 )
             )
 
@@ -131,7 +154,10 @@ def detect_alerts(events: list[ProductionEvent]) -> list[Alert]:
                 severity="warning",
                 title="OEE has fallen below the operating threshold",
                 evidence=f"Latest rolling OEE is {kpis['oee']}%, below the 70% warning threshold.",
-                recommendation="Review availability loss first, then the dominant reject and stop categories.",
+                recommendation=(
+                    "Review availability loss first, then the dominant "
+                    "reject and stop categories."
+                ),
             )
         )
 

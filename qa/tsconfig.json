@@ -4,7 +4,19 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "strict": true,
-    "noEmit": true
+    "noEmit": true,
+    "lib": [
+      "ES2023",
+      "DOM",
+      "ESNext.Disposable"
+    ],
+    "types": [
+      "node",
+      "@playwright/test"
+    ]
   },
-  "include": ["tests/**/*.ts", "playwright.config.ts"]
+  "include": [
+    "tests/**/*.ts",
+    "playwright.config.ts"
+  ]
 }

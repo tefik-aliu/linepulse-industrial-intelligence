@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import os
+import time
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
-import os
 from pathlib import Path
-import time
 
 from fastapi import Depends, FastAPI, HTTPException, Response
 from fastapi.responses import FileResponse
@@ -22,7 +22,11 @@ from .simulator import SimulationState, baseline_seed, make_event
 
 REQUESTS = Counter("linepulse_http_requests_total", "HTTP requests", ["method", "path", "status"])
 LATENCY = Histogram("linepulse_http_request_duration_seconds", "HTTP request duration", ["path"])
-EVENTS_CREATED = Counter("linepulse_events_created_total", "Production events generated", ["scenario"])
+EVENTS_CREATED = Counter(
+    "linepulse_events_created_total",
+    "Production events generated",
+    ["scenario"],
+)
 READINESS = Gauge("linepulse_readiness", "Readiness state: 1 healthy, 0 degraded")
 
 
@@ -46,7 +50,10 @@ def create_app(database_url: str | None = None) -> FastAPI:
     app = FastAPI(
         title="LinePulse Industrial Intelligence",
         version="0.1.0",
-        description="Explainable quality, reliability and observability for a simulated production line.",
+        description=(
+            "Explainable quality, reliability and observability "
+            "for a simulated production line."
+        ),
         lifespan=lifespan,
     )
     app.state.session_factory = session_factory
@@ -81,7 +88,10 @@ def create_app(database_url: str | None = None) -> FastAPI:
     def ready(session: Session = Depends(session_dependency)):
         if state.dependency_degraded:
             READINESS.set(0)
-            raise HTTPException(status_code=503, detail="Simulated production database dependency is degraded.")
+            raise HTTPException(
+                status_code=503,
+                detail="Simulated production database dependency is degraded.",
+            )
         session.execute(text("SELECT 1"))
         READINESS.set(1)
         return {"status": "ready", "database": "connected"}
