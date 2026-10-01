@@ -70,9 +70,11 @@ def create_app(database_url: str | None = None) -> FastAPI:
     async def metrics_middleware(request, call_next):
         start = time.perf_counter()
         response = await call_next(request)
-        LATENCY.labels(path=request.url.path).observe(time.perf_counter() - start)
+        route = request.scope.get("route")
+        route_path = getattr(route, "path", "unmatched")
+        LATENCY.labels(path=route_path).observe(time.perf_counter() - start)
         REQUESTS.labels(
-            method=request.method, path=request.url.path, status=response.status_code
+            method=request.method, path=route_path, status=response.status_code
         ).inc()
         return response
 

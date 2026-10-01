@@ -98,3 +98,24 @@ because credible engineering includes knowing what the evidence does not prove.
 
 Python · FastAPI · SQLAlchemy · SQLite/PostgreSQL-ready · Prometheus · OpenPyXL · Docker ·
 Pytest · TypeScript · Playwright · GitHub Actions
+
+## Inspect the implementation
+
+- [KPI and alert calculations](app/analytics.py)
+- [API and route-based metrics](app/main.py)
+- [Analytics behaviour](tests/test_analytics.py)
+- [API and metrics contracts](tests/test_api.py)
+
+## Bounded monitoring labels
+
+HTTP metric labels use matched route templates. Unknown URLs share the unmatched label, preventing each arbitrary URL from creating a new Prometheus time series.
+
+## Operational boundaries
+
+Events are synthetic. The simulator is process-local and this is a single-process demonstration, not a multi-worker production architecture.
+
+## Actual application preview
+
+![Local application with demonstration data](docs/demo.png)
+
+[Watch the recorded demonstration and read the walkthrough](https://tefik-aliu.github.io/#demos). Captured from a local instance, with demonstration data.

@@ -49,3 +49,17 @@ def test_excel_shift_report_is_downloadable(client):
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     assert response.content[:2] == b"PK"
+
+
+def test_unknown_urls_share_one_metrics_label(client):
+    from app.main import REQUESTS
+
+    counter = REQUESTS.labels(method="GET", path="unmatched", status=404)
+    before = counter._value.get()
+    for path in ("/unknown-alpha", "/unknown-beta", "/unknown-gamma"):
+        assert client.get(path).status_code == 404
+    assert counter._value.get() == before + 3
+    metrics = client.get("/metrics").text
+    assert 'path="unmatched"' in metrics
+    assert 'path="/unknown-alpha"' not in metrics
+    assert 'path="/unknown-beta"' not in metrics
